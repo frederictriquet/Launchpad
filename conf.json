@@ -1,14 +1,22 @@
 [
   {
     "label": "intro",
-    "file": ""
+    "file": "intro.mp3"
   },
   {
-    "label": "transition",
-    "file": ""
+    "label": "ambiance 1",
+    "file": "ambiance1.mp3"
   },
   {
-    "label": "fin",
-    "file": ""
+    "label": "ambiance 2",
+    "file": "ambiance2.mp3"
+  },
+  {
+    "label": "ambiance 3",
+    "file": "ambiance3.mp3"
+  },
+  {
+    "label": "vote",
+    "file": "vote.mp3"
   }
 ]

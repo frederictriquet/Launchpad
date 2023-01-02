@@ -24,7 +24,7 @@ class Launchpad(QtWidgets.QMainWindow):
         self.widget = QtWidgets.QWidget(self)
         self.setCentralWidget(self.widget)
 
-        self.playbuttonbox = QtWidgets.QHBoxLayout()
+        self.playbuttonbox = QtWidgets.QVBoxLayout()
         self.playbutton = {}
         for button in conf:
             b = QtWidgets.QPushButton(button['label'])
@@ -65,11 +65,22 @@ class Launchpad(QtWidgets.QMainWindow):
         if self.current_launched:
             self.playbutton[self.current_launched].setChecked(True)
         self.play_sound(self.current_launched)
-    
+
+
+    def get_filename(self, label):
+        res = list(map(lambda x: x['file'],filter(lambda x: x['label'] == label, self.conf)))
+        if not res:
+          print(f'[Conf problem] No file found for label {label}')
+          return None
+        return res[0]
+  
+
     def play_sound(self, label):
-        print(label)
         if label:
-            fullpath = 'Todo'
+            fullpath = self.get_filename(label)
+            if not fullpath:
+                self.mediaplayer.stop()
+                return
             self.media = self.instance.media_new(fullpath)
             self.mediaplayer.set_media(self.media)
             if self.mediaplayer.play() == -1:
