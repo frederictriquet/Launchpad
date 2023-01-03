@@ -1,3 +1,8 @@
+name: Build for MacOS, Ubuntu and Windows
+
+on:
+  push:
+
 jobs:
   build:
     strategy:
