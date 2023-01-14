@@ -133,3 +133,6 @@ dmypy.json
 *.bin
 *.exe
 pad.app/
+Cluedo/
+.DS_Store
+Info.plist

@@ -4,6 +4,9 @@ from PyQt6.QtCore import Qt
 import sys
 import json
 import vlc
+import math
+
+NB_ROW_MAX = 20
 
 class Launchpad(QtWidgets.QMainWindow):
   def __init__(self):
@@ -14,6 +17,7 @@ class Launchpad(QtWidgets.QMainWindow):
     QtWidgets.QMainWindow.__init__(self)
     self.setWindowTitle("Launchpad")
     self.setWindowIcon(QtGui.QIcon('icon.png'))
+    self.kbd = "AZERTYUIOPQSDFGHJKLMWXCVBN"
     # self.setWindowIconText("FRED")
     # self.setStyleSheet("""
     # background: blue
@@ -34,7 +38,7 @@ class Launchpad(QtWidgets.QMainWindow):
     self.setCentralWidget(self.widget)
 
     # TOP ZONE
-    self.playbuttonbox = QtWidgets.QVBoxLayout()
+    self.playbuttonbox = QtWidgets.QGridLayout()
     self.playbutton_widgets = []
     self.create_play_buttons()
 
@@ -93,13 +97,14 @@ class Launchpad(QtWidgets.QMainWindow):
   def create_play_buttons(self):
     self.remove_play_buttons()
     self.playbutton = {}
-    for conf_item in self.conf:
-      b = QtWidgets.QPushButton(conf_item['label'])
+    for i, conf_item in enumerate(self.conf):
+      shortcut = f'[{self.kbd[i]}] ' if i < 26 else ''
+      b = QtWidgets.QPushButton(shortcut + conf_item['label'])
       b.setCheckable(True)
       b.clicked[bool].connect(self.launch)
       self.playbutton_widgets.append(b)
-      self.playbuttonbox.addWidget(b)
-      self.playbutton[conf_item['label']] = b
+      self.playbuttonbox.addWidget(b, i%NB_ROW_MAX, int(i/NB_ROW_MAX))
+      self.playbutton[i] = b
 
 
   def remove_play_buttons(self):
@@ -120,10 +125,10 @@ class Launchpad(QtWidgets.QMainWindow):
 
   def launch(self):
     checked = []
-    for b in self.conf:
-      if self.playbutton[b['label']].isChecked():
-        self.playbutton[b['label']].setChecked(False)
-        checked.append(b['label'])
+    for i, b in enumerate(self.conf):
+      if self.playbutton[i].isChecked():
+        self.playbutton[i].setChecked(False)
+        checked.append(i)
     if len(checked) == 0:
       self.current_launched = None
     elif len(checked) == 1:
@@ -133,7 +138,7 @@ class Launchpad(QtWidgets.QMainWindow):
         self.current_launched = checked[1]
       else:
         self.current_launched = checked[0]
-    if self.current_launched:
+    if self.current_launched is not None:
       self.playbutton[self.current_launched].setChecked(True)
     self.play_sound(self.current_launched)
     self.update_status()
@@ -143,14 +148,30 @@ class Launchpad(QtWidgets.QMainWindow):
     self.setWindowTitle(self.status)
 
 
-  def get_filename(self, label):
-    res = list(map(lambda x: x['file'],filter(lambda x: x['label'] == label, self.conf)))
-    return res[0]
-  
+  def get_filename(self, rank):
+    return self.conf[rank]['file']
 
-  def play_sound(self, label):
-    if label:
-      fullpath = self.conf_dirname + '/' + self.get_filename(label)
+  def launch_from_keyboard(self, key):
+    rank = self.kbd.find(chr(key))
+    if rank == -1:
+      return
+    if rank > len(self.conf):
+      return
+    # print(self.conf[rank])
+    self.playbutton[rank].setChecked(not self.playbutton[rank].isChecked())
+    self.launch()
+  
+  def keyPressEvent(self, event):
+    key = event.key()
+    # print('pressed from myDialog: ', key)
+    if key == Qt.Key.Key_Escape.value:
+        self.close()
+    if ord('A') <= key and key <= ord('Z'):
+      self.launch_from_keyboard(key)
+
+  def play_sound(self, rank):
+    if rank is not None:
+      fullpath = self.conf_dirname + '/' + self.get_filename(rank)
       try:
         with open(fullpath) as dummy:
           pass
@@ -173,8 +194,8 @@ class Launchpad(QtWidgets.QMainWindow):
     self.timer.stop()
     self.is_paused = True
     self.current_launched = None
-    for b in self.conf:
-      self.playbutton[b['label']].setChecked(False)
+    for i in range(len(self.conf)):
+      self.playbutton[i].setChecked(False)
 
   def set_volume(self, volume):
     self.mediaplayer.audio_set_volume(volume)
