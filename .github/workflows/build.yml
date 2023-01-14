@@ -34,7 +34,7 @@ jobs:
         uses: Nuitka/Nuitka-Action@main
         with:
           args: --macos-target-arch=arm64
-          script-name: launchpad.py
+          script-name: pad.py
           onefile: true
   
       - name: Upload Artifacts
