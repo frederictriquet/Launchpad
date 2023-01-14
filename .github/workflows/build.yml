@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         # os: [macos-11]
-        os: [macos-11, macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-11, ubuntu-latest, windows-latest]
       
     runs-on: ${{ matrix.os }}
     
@@ -45,3 +45,33 @@ jobs:
             build/*.exe
             build/*.bin
             build/*.app/**/*
+  buildm1:
+    runs-on: macos-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'arm64'
+          cache: 'pip'
+          cache-dependency-path: |
+            **/requirements*.txt
+            
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt py2app
+        # -r requirements-dev.txt
+          
+      - name: Build Executable
+        run: |
+          mkdir build
+          py2applet pad.py
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pad-macos-m1
+          path: build/pad.app 
