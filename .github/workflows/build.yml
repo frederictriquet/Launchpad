@@ -67,11 +67,10 @@ jobs:
           
       - name: Build Executable
         run: |
-          mkdir build
           py2applet pad.py
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
           name: pad-macos-m1
-          path: build/pad.app 
+          path: pad.app 
