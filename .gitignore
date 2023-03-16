@@ -134,5 +134,6 @@ dmypy.json
 *.exe
 pad.app/
 Cluedo/
+.vscode/
 .DS_Store
 Info.plist
