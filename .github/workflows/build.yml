@@ -5,14 +5,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        # os: [macos-11]
-        # os: [ubuntu-latest]
-        os: [windows-latest]
-        # os: [macos-11, ubuntu-latest, windows-latest]
-      
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     
     steps:
       - name: Check-out repository
@@ -73,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            pad-onefile.exe
+            build/pad-onefile.exe
 
       - name: Build Executable standalone
         uses: Nuitka/Nuitka-Action@main
@@ -86,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            pad-standalone.exe
+            build/pad-standalone.exe
 
 
   # buildm1:
