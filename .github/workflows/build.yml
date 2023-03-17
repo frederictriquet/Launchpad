@@ -42,41 +42,53 @@ jobs:
           name: pad.exe
           path: dist
 
-      - name: Build with nuitka (standalone)
-        run: |
-          python -m nuitka --standalone -o pad-nuitka-standalone.exe pad.py
+      # - name: Build with nuitka (standalone)
+      #   run: |
+      #     python -m nuitka --standalone -o pad-nuitka-standalone.exe pad.py
 
-      - uses: actions/upload-artifact@v2
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: pad-nuitka.exe
+      #     path: .
+
+      # - name: Build with nuitka (onefile)
+      #   run: |
+      #     python -m nuitka --onefile -o pad-nuitka-onefile.exe pad.py
+
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: pad-onefile.exe
+      #     path: .
+
+
+
+      - name: Build Executable onefile
+        uses: Nuitka/Nuitka-Action@main
         with:
-          name: pad-nuitka.exe
-          path: .
-
-      - name: Build with nuitka (onefile)
-        run: |
-          python -m nuitka --onefile -o pad-nuitka-onefile.exe pad.py
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: pad-onefile.exe
-          path: .
-
-
-
-  #     - name: Build Executable
-  #       uses: Nuitka/Nuitka-Action@main
-  #       with:
-  #         # args: --macos-target-arch=arm64
-  #         script-name: pad.py
-  #         onefile: true
+          script-name: pad.py
+          onefile: true
+          output-file: pad-onefile.exe
   
-  #     - name: Upload Artifacts
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: ${{ runner.os }} Build
-  #         path: |
-  #           build/*.exe
-  #           build/*.bin
-  #           build/*.app/**/*
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            pad-onefile.exe
+
+      - name: Build Executable standalone
+        uses: Nuitka/Nuitka-Action@main
+        with:
+          script-name: pad.py
+          standalone: true
+          output-file: pad-standalone.exe
+  
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            pad-standalone.exe
+
+
   # buildm1:
   #   runs-on: macos-latest
   #   steps:
