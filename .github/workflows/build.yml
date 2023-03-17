@@ -17,29 +17,29 @@ jobs:
       - name: Check-out repository
         uses: actions/checkout@v3
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: '3.10' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-      #     architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-      #     cache: 'pip'
-      #     cache-dependency-path: |
-      #       **/requirements*.txt
-            
-      # - name: Install Dependencies
-      #   run: |
-      #     pip install -r src/requirements.txt
-      #   # -r requirements-dev.txt
-
-      - name: Package Application
-        uses: JackMcKew/pyinstaller-action-windows@main
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          path: src
+          python-version: '3.10' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          # architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+          cache: 'pip'
+          cache-dependency-path: |
+            **/requirements*.txt
+            
+      - name: Install Dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+        # -r requirements-dev.txt
+
+      - name: Build with pyinstaller
+        run: |
+          pyinstaller --onefile pad.py
 
       - uses: actions/upload-artifact@v2
         with:
-          name: pad
-          path: src/dist/windows
+          name: pad.exe
+          path: dist
 
   #     - name: Build Executable
   #       uses: Nuitka/Nuitka-Action@main
