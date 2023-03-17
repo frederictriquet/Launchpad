@@ -42,13 +42,22 @@ jobs:
           name: pad.exe
           path: dist
 
-      - name: Build with nuitka
+      - name: Build with nuitka (standalone)
         run: |
-          python -m nuitka --standalone -o pad-nuitka.exe pad.py
+          python -m nuitka --standalone -o pad-nuitka-standalone.exe pad.py
 
       - uses: actions/upload-artifact@v2
         with:
           name: pad-nuitka.exe
+          path: .
+
+      - name: Build with nuitka (onefile)
+        run: |
+          python -m nuitka --onefile -o pad-nuitka-onefile.exe pad.py
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pad-onefile.exe
           path: .
 
 
