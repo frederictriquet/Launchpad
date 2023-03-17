@@ -29,7 +29,7 @@ jobs:
             
       - name: Install Dependencies
         run: |
-          pip install pyinstaller
+          pip install pyinstaller nuitka
           pip install -r requirements.txt
         # -r requirements-dev.txt
 
@@ -41,6 +41,17 @@ jobs:
         with:
           name: pad.exe
           path: dist
+
+      - name: Build with nuitka
+        run: |
+          python -m nuitka --onefile --standalone -o pad-nuitka.exe pad.py
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pad-nuitka.exe
+          path: .
+
+
 
   #     - name: Build Executable
   #       uses: Nuitka/Nuitka-Action@main
