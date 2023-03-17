@@ -242,7 +242,7 @@ class Launchpad(QtWidgets.QMainWindow):
     self.timelabel.setText(self.get_time_info())
 
     if not self.mediaplayer.is_playing():
-      self.timer.stop()
+      # self.timer.stop()
       if not self.is_paused:
         self.stop_sound()
       # self.timer.start()
@@ -263,11 +263,11 @@ class Launchpad(QtWidgets.QMainWindow):
   def set_position(self, pos=None):
     """Set the movie position according to the position slider.
     """
-    # self.timer.stop()
+    self.timer.stop()
     if pos == None:
         pos = self.positionslider.value()
-    # self.mediaplayer.set_position(pos / 1000.0)
-    # self.timer.start()
+    self.mediaplayer.set_position(pos / 1000.0)
+    self.timer.start()
 
 
 def main():
