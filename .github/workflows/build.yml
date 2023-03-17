@@ -44,7 +44,7 @@ jobs:
 
       - name: Build with nuitka
         run: |
-          python -m nuitka --onefile --standalone -o pad-nuitka.exe pad.py
+          python -m nuitka --standalone -o pad-nuitka.exe pad.py
 
       - uses: actions/upload-artifact@v2
         with:
