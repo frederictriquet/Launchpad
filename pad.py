@@ -24,9 +24,10 @@ class Launchpad(QtWidgets.QMainWindow):
     # background: blue
     # """)
 
-    self.instance = vlc.get_default_instance()
+    # self.instance = vlc.get_default_instance()
     self.media = None
-    self.mediaplayer = self.instance.media_player_new()
+    # self.mediaplayer = self.instance.media_player_new()
+    self.mediaplayer = vlc.MediaPlayer()
 
     self.create_ui()
     self.is_paused = False
@@ -197,8 +198,12 @@ class Launchpad(QtWidgets.QMainWindow):
         self.stop_sound()
         self.timer.start()
         return
+      except Exception as e:
+        print("FATAL "+str(e))
+        return
       self.status = f'Playing: {fullpath}'
-      self.media = self.instance.media_new_path(fullpath)
+      # self.media = self.instance.media_new_path(fullpath)
+      self.media = vlc.Media(fullpath)
       self.mediaplayer.set_media(self.media)
       self.mediaplayer.play()
       self.is_paused = False
@@ -251,11 +256,12 @@ class Launchpad(QtWidgets.QMainWindow):
 
   def load_conf(self, conffile):
     try:
-      with open(conffile) as jsonfile:
+      with open(conffile, encoding="utf8") as jsonfile:
         stringdata = jsonfile.read()
         self.conf = json.loads(stringdata)
         self.conf_dirname = conffile.rsplit('/',1)[0]
-    except:
+    except Exception as e:
+      print("Exception " + str(e))
       self.conf = []
       self.conf_dirname = ''
 
